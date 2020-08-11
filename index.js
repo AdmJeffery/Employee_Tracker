@@ -19,7 +19,12 @@ connection.connect((err) => {
 })
 
 function startTracker() {
-    inquirer.prompt({
+    console.log("Welcome to Employee Tracker 1.0!")
+    mainMenu();
+}
+
+function mainMenu(){
+    inquirer.prompt ({
         
     })
 }
