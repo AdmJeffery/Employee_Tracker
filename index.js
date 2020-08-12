@@ -24,7 +24,50 @@ function startTracker() {
 }
 
 function mainMenu(){
+    console.log("What would you like to do?")
     inquirer.prompt ({
-        
+        type:"rawlist",
+        name:"choice",
+        message: [
+            "View All Employees",
+            "View All Employees by Manager",
+            "Add Employee",
+            "Add Department",
+            "Update Employee",
+            "Update Employee Role",
+            "Update Employee Manager",
+        ]
+    })
+    .then(input =>{
+        switch(input.choice){
+            case "View All Employees":
+                viewEmployees();
+                break;
+            
+            case "View All Employees by Manager":
+                employeeManage();
+                break;
+
+            case "Add Employee":
+                addEmployee();
+                break;
+            
+            case "Add Department":
+                addDepartment();
+                break;
+            
+            case "Update Employee":
+                updateEmployee();
+                break;
+
+            case "Update Employee Role":
+                updateRole();
+                break;
+
+            case "Update Employee Manager":
+                updateManager();
+                break;
+        }   
+
     })
 }
