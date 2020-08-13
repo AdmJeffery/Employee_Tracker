@@ -41,7 +41,7 @@ function startTracker() {
 function mainMenu(){
     
     inquirer.prompt ({
-        type:"rawlist",
+        type:"list",
         name:"choice",
         message: "What would you like to do?",
         choices: [
@@ -70,8 +70,8 @@ function mainMenu(){
                 break;
             
             case "View Departments":
-                console.log("This works!");
-                //viewDept();
+                
+                viewDept();
                 break;
 
             case "View All Employees by Manager":
@@ -151,6 +151,25 @@ function viewRoles(){
         }
     })
 }
+
+function viewDept(){
+    connection.query("SELECT * FROM departments", function (err, res){
+        if (err) throw err;
+       
+        let depts = [];
+
+        for(i=0; i<res.length; i++){
+            depts.push({
+                id: res[i].id,
+                dept_name: res[i].dept_name
+
+            })
+            console.table(depts);
+            mainMenu();
+        }
+    })
+}
+
 function addEmployee(){
     
     inquirer
