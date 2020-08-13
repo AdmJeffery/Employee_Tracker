@@ -146,9 +146,10 @@ function viewRoles(){
                 department_id: res[i].department_id
 
             })
-            console.table(roledbInfo);
-            mainMenu();
+            
         }
+        console.table(roledbInfo);
+            mainMenu();
     })
 }
 
@@ -164,9 +165,10 @@ function viewDept(){
                 dept_name: res[i].dept_name
 
             })
-            console.table(depts);
-            mainMenu();
+            
         }
+        console.table(depts);
+            mainMenu();
     })
 }
 
