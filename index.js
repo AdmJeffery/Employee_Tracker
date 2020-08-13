@@ -150,12 +150,12 @@ function addEmployee(){
     .then (response => {
         //console.log(response)
         let roleId;
-        connection.query("SELECT id FROM role WHERE title = ?", response.role, 
+        connection.query("SELECT id FROM roledb WHERE title = ?", response.role, 
         function (err, res){
             if (err) throw err;
             roleId = res[0].id;
             connection.query(
-                "INSERT INTO employee SET ?",
+                "INSERT INTO employees SET ?",
                 {
                    first_name: response.firstname,
                    last_name: response.lastname, 
