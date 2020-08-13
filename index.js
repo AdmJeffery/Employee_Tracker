@@ -41,11 +41,11 @@ function mainMenu(){
             "EXIT"
         ]
     })
-    .then(input =>{
-        switch(input.choice){
+    .then(response =>{
+        switch(response.choice){
             case "View All Employees":
-                console.log("This works!")    
-            //viewEmployees();
+                    
+                viewEmployees();
                 break;
             
             case "View All Employees by Manager":
@@ -54,8 +54,8 @@ function mainMenu(){
                 break;
 
             case "Add Employee":
-                console.log("This works!")    
-            //addEmployee();
+                //console.log("This works!")    
+                addEmployee();
                 break;
             
             case "Add Department":
@@ -85,3 +85,58 @@ function mainMenu(){
 
     })
 }
+
+function viewEmployees(){
+    connection.query("SELECT * FROM employees", function (err, res){
+        if (err) throw err;
+        //console.log(res)
+        
+        let employeeInfo = [];
+
+        for (i=0; i<res.length; i++){
+            employeeInfo.push({
+                name: res[i].first_name + " " + res[i].last_name,
+                role: res[i].role,
+                manager: res[i].manager 
+            })
+        }
+        console.table(employeeInfo)
+        mainMenu();
+
+    })
+}
+
+function addEmployee(){
+    inquirer
+        .prompt ([
+    {
+        type: "input",
+        name: "firstname",
+        message: "Enter the employee's first name."
+    },
+    {
+        type:"input",
+        name: "lastname",
+        message: "Enter the employee's last name."
+    },
+    {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: ["Sales Associate", 
+        "Sales Lead",
+        "Software Developer",
+        "Lead Developer",
+        "Accountant",
+        "Legal Team Lead",
+        "Paralegal"]
+    },
+    {
+        type: "input",
+        name:"firstname",
+        message: "Enter the employee's manager."
+    }
+])
+    .then (response => {
+        console.log(response)
+    })}
