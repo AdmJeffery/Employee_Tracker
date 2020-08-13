@@ -6,11 +6,11 @@ const password = require("./Assets/password.js")
 let connection = mysql.createConnection({
     host: "localhost",
 
-    port:8080,
+    port:3306,
 
     user: "root",
 
-    password: password.password,
+    password: "jUP1t3r1",
     database:"employee_trackerDB"
 })
 
@@ -25,11 +25,12 @@ function startTracker() {
 }
 
 function mainMenu(){
-    console.log("What would you like to do?")
+    
     inquirer.prompt ({
         type:"rawlist",
         name:"choice",
-        message: [
+        message: "What would you like to do?",
+        choices: [
             "View All Employees",
             "View All Employees by Manager",
             "Add Employee",
@@ -37,37 +38,49 @@ function mainMenu(){
             "Update Employee",
             "Update Employee Role",
             "Update Employee Manager",
+            "EXIT"
         ]
     })
     .then(input =>{
         switch(input.choice){
             case "View All Employees":
-                viewEmployees();
+                console.log("This works!")    
+            //viewEmployees();
                 break;
             
             case "View All Employees by Manager":
-                employeeManage();
+                console.log("This works!")    
+            //employeeManage();
                 break;
 
             case "Add Employee":
-                addEmployee();
+                console.log("This works!")    
+            //addEmployee();
                 break;
             
             case "Add Department":
-                addDepartment();
+                console.log("This works!")    
+            //addDepartment();
                 break;
             
             case "Update Employee":
-                updateEmployee();
+                console.log("This works!")    
+            //updateEmployee();
                 break;
 
             case "Update Employee Role":
-                updateRole();
+                console.log("This works!")    
+            //updateRole();
                 break;
 
             case "Update Employee Manager":
-                updateManager();
+                console.log("This works!")    
+            //updateManager();
                 break;
+            
+            case "EXIT":
+                console.log("Goodbye!");
+                connection.end();
         }   
 
     })
