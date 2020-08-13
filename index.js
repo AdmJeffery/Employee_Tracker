@@ -46,6 +46,8 @@ function mainMenu(){
         message: "What would you like to do?",
         choices: [
             "View All Employees",
+            "View Roles",
+            "View Departments",
             "View All Employees by Manager",
             "Add Employee",
             "Add Department",
@@ -62,6 +64,16 @@ function mainMenu(){
                 viewEmployees();
                 break;
             
+            case "View Roles":
+                console.log("This works!")
+                //viewRoles();
+                break;
+            
+            case "View Departments":
+                console.log("This works!");
+                //viewDept();
+                break;
+                
             case "View All Employees by Manager":
                 console.log("This works!")    
             //employeeManage();
