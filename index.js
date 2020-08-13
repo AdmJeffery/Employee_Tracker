@@ -19,6 +19,20 @@ connection.connect((err) => {
     startTracker();
 })
 
+let employeeId;
+
+
+const roles = [];
+connection.query("SELECT title FROM roledb", function (err, res){
+    if (err) throw err;
+    
+    for (i=0; i<res.length; i++){
+        roles.push(res[i].title)
+    }
+});
+
+let roleAndId = [];
+
 function startTracker() {
     console.log("Welcome to Employee Tracker 1.0!")
     mainMenu();
@@ -107,6 +121,7 @@ function viewEmployees(){
 }
 
 function addEmployee(){
+    
     inquirer
         .prompt ([
     {
@@ -120,23 +135,38 @@ function addEmployee(){
         message: "Enter the employee's last name."
     },
     {
+        type: "input",
+        name:"manager",
+        message: "Enter the employee's manager."
+    },
+    {
         type: "list",
         name: "role",
         message: "What is the employee's role?",
-        choices: ["Sales Associate", 
-        "Sales Lead",
-        "Software Developer",
-        "Lead Developer",
-        "Accountant",
-        "Legal Team Lead",
-        "Paralegal"]
+        choices: roles
     },
-    {
-        type: "input",
-        name:"firstname",
-        message: "Enter the employee's manager."
-    }
+    
 ])
     .then (response => {
-        console.log(response)
+        //console.log(response)
+        let roleId;
+        connection.query("SELECT id FROM role WHERE title = ?", response.role, 
+        function (err, res){
+            if (err) throw err;
+            roleId = res[0].id;
+            connection.query(
+                "INSERT INTO employee SET ?",
+                {
+                   first_name: response.firstname,
+                   last_name: response.lastname, 
+                   role_id: roleId,
+                   manager: response.manager
+                },
+                function (err, res){
+                    if (err) throw err;
+                    console.log ("Employee added successfully!")
+                    mainMenu();
+                }
+            )     
+        })
     })}
