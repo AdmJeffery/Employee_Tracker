@@ -65,15 +65,15 @@ function mainMenu(){
                 break;
             
             case "View Roles":
-                console.log("This works!")
-                //viewRoles();
+                
+                viewRoles();
                 break;
             
             case "View Departments":
                 console.log("This works!");
                 //viewDept();
                 break;
-                
+
             case "View All Employees by Manager":
                 console.log("This works!")    
             //employeeManage();
@@ -122,7 +122,7 @@ function viewEmployees(){
         for (i=0; i<res.length; i++){
             employeeInfo.push({
                 name: res[i].first_name + " " + res[i].last_name,
-                role: res[i].role,
+                role: res[i].role_id,
                 manager: res[i].manager 
             })
         }
@@ -132,6 +132,25 @@ function viewEmployees(){
     })
 }
 
+function viewRoles(){
+    connection.query("SELECT * FROM roledb", function (err, res){
+        if (err) throw err;
+
+        let roledbInfo = [];
+
+        for ( i=0; i<res.length; i++){
+            roledbInfo.push({
+                id: res[i].id,
+                title: res[i].title,
+                salary: res[i].salary,
+                department_id: res[i].department_id
+
+            })
+            console.table(roledbInfo);
+            mainMenu();
+        }
+    })
+}
 function addEmployee(){
     
     inquirer
