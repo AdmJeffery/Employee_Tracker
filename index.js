@@ -52,7 +52,6 @@ function mainMenu(){
             "Add Employee",
             "Add Role",
             "Add Department",
-            "Update Employee",
             "Update Employee Role",
             "Update Employee Manager",
             "EXIT"
@@ -94,15 +93,10 @@ function mainMenu(){
                 //console.log("This works!")    
                 addDepartment();
                 break;
-            
-            case "Update Employee":
-                console.log("This works!")    
-            //updateEmployee();
-                break;
 
             case "Update Employee Role":
-                console.log("This works!")    
-            //updateRole();
+                //console.log("This works!")    
+                updateRole();
                 break;
 
             case "Update Employee Manager":
@@ -316,4 +310,59 @@ function addRole(){
                 
             });
     });
+}
+
+function updateRole(){
+    const currentEmployees = [];
+    connection.query("SELECT * FROM employees", function(err, res){
+        if (err) throw err;
+        for (i=0; i<res.length; i++) {
+            currentEmployees.push(res[i].first_name + " "  + res[i].last_name);
+        }
+        inquirer
+            .prompt([
+                {
+                    type:"list",
+                    name:"chosenone",
+                    message:"Which employee would you like to update?",
+                    choices: currentEmployees
+                },
+                {
+                    type: "list",
+                    name: "newRole",
+                    message: "Select the new role for this employee",
+                    choices: roles
+                }
+            ]).then (response => {
+                connection.query("SELECT * FROM employees", function (err, res){
+                    if (err) throw (err)
+                    let selectedEmployee = res.filter(employees => response.chosenone === employees.first_name + " " + employees.last_name);
+                    employeeId = selectedEmployee[0].id;
+                    console.log(employeeId)
+
+                    connection.query("SELECT * FROM roledb", function (err, result){
+                        if (err) throw err;
+                        let newRoleId = result.filter(employees => response.newRole === employees.title)[0].id;
+                        console.log(newRoleId)
+
+                        connection.query(
+                            "UPDATE employees SET ? WHERE ?",
+                            [
+                                {
+                                    role_id: newRoleId
+                                },
+                                {
+                                    id: employeeId
+                                }
+                            ],
+                            function (error, res){
+                                if (error) throw error;
+                                console.log("Employee role updated!");
+                                mainMenu();
+                            }
+                        )
+                    }
+                )})
+            })
+    })
 }
