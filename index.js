@@ -10,7 +10,7 @@ let connection = mysql.createConnection({
 
     user: "root",
 
-    password: "",
+    password: "jUP1t3r1",
     database:"employee_trackerDB"
 })
 
@@ -286,30 +286,34 @@ function addRole(){
 
                 }
             ])
-            .then(async (response) => {
+            .then( (response) => {
                 let deptId;
                 connection.query(
-                    "SELECT id FROM departments WHERE title = ?", response.department, function(err, depart){
+                    "SELECT id FROM departments WHERE dept_name = ?", response.department, function(err, depart){
                         if (err) throw err;
+                        console.log(depart)
+                        console.log(`RESPONSE: ${depart}`)
                         deptId = depart[0].id;
+
+                        connection.query(
+                            "INSERT INTO roledb SET ?",
+                            {
+                                title: response.title,
+                                salary: response.salary,
+                                department_id: deptId,
+                            },
+                            function (error, res) {
+                                if (error){
+                                    throw error;
+                                }
+                                console.log("Role added successfully")
+                                mainMenu();
+                            }
+                        );
                     }
                 )
                 
-                connection.query(
-                    "INSERT INTO roledb SET ?",
-                    {
-                        title: response.title,
-                        salary: response.salary,
-                        department_id: deptId,
-                    },
-                    function (error, res) {
-                        if (error){
-                            throw error;
-                        }
-                        console.log("Role added successfully")
-                        mainMenu();
-                    }
-                );
+                
             });
     });
 }
