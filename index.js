@@ -10,7 +10,7 @@ let connection = mysql.createConnection({
 
     user: "root",
 
-    password: "jUP1t3r1",
+    password: "",
     database:"employee_trackerDB"
 })
 
@@ -75,32 +75,32 @@ function mainMenu(){
                 break;
 
             case "View All Employees by Manager":
-                console.log("This works!")    
-            //employeeManage();
+                console.log("Coming Soon")    
+                mainMenu();
                 break;
 
             case "Add Employee":
-                //console.log("This works!")    
+                   
                 addEmployee();
                 break;
             
             case "Add Role":
-                //console.log("This works!")
+                
                 addRole();
                 break;
             
             case "Add Department":
-                //console.log("This works!")    
+                    
                 addDepartment();
                 break;
 
             case "Update Employee Role":
-                //console.log("This works!")    
+                   
                 updateRole();
                 break;
 
             case "Update Employee Manager":
-                console.log("This works!")    
+                console.log("Coming Soon")    
             //updateManager();
                 break;
             
@@ -338,12 +338,12 @@ function updateRole(){
                     if (err) throw (err)
                     let selectedEmployee = res.filter(employees => response.chosenone === employees.first_name + " " + employees.last_name);
                     employeeId = selectedEmployee[0].id;
-                    console.log(employeeId)
+                    
 
                     connection.query("SELECT * FROM roledb", function (err, result){
                         if (err) throw err;
                         let newRoleId = result.filter(employees => response.newRole === employees.title)[0].id;
-                        console.log(newRoleId)
+                        
 
                         connection.query(
                             "UPDATE employees SET ? WHERE ?",
