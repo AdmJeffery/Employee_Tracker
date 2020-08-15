@@ -85,8 +85,8 @@ function mainMenu(){
                 break;
             
             case "Add Department":
-                console.log("This works!")    
-            //addDepartment();
+                //console.log("This works!")    
+                addDepartment();
                 break;
             
             case "Update Employee":
@@ -222,3 +222,27 @@ function addEmployee(){
             )     
         })
     })}
+
+function addDepartment() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "deptname",
+                message: "Enter the name of the Department that you would like to add."
+            
+            }
+        ]) .then (response =>{
+            
+            connection.query("INSERT INTO departments SET ?",
+                {
+                    dept_name: response.deptname
+                }, 
+                function (err, res){
+                    if (err) throw err;
+                    console.log("Department added successfully")
+                    mainMenu();
+                }
+            )
+        })
+}
