@@ -31,7 +31,7 @@ connection.query("SELECT title FROM roledb", function (err, res){
     }
 });
 
-let roleAndId = [];
+
 
 function startTracker() {
     console.log("Welcome to Employee Tracker 1.0!")
@@ -113,29 +113,35 @@ function mainMenu(){
 }
 
 function viewEmployees(){
-    connection.query("SELECT * FROM employees", function (err, res){
-        if (err) throw err;
-        //console.log(res)
-        
-        let employeeInfo = [];
 
-        for (i=0; i<res.length; i++){
-            employeeInfo.push({
-                name: res[i].first_name + " " + res[i].last_name,
-                role: res[i].role_id,
-                manager: res[i].manager 
-            })
-        }
-        console.table(employeeInfo)
+    var searchAll = "SELECT first_name, last_name, title, salary, manager_id FROM employees LEFT JOIN roledb ON employees.role_id = roledb.id"
+    connection.query(searchAll, function (err, res){
+        if (err) throw err;
+        console.log(res)
+        
+        //let employeeInfo = [];
+
+        //for (i=0; i<res.length; i++){
+        //    employeeInfo.push({
+        //        name: res[i].first_name + " " + res[i].last_name,
+        //        role: res[i].role_id,
+        //        manager: res[i].manager
+        //        title:
+        //    })
+        //}
+        console.table(res)
         mainMenu();
 
     })
 }
 
 function viewRoles(){
-    connection.query("SELECT * FROM roledb", function (err, res){
-        if (err) throw err;
+    let searchRoles = "SELECT roledb.id, title, salary, departments.id, departments.dept_name AS departments FROM roledb";
+    searchRoles += " LEFT JOIN departments ON roledb.department_id = departments.id ";
 
+    connection.query(searchRoles, function (err, res){
+        if (err) throw err;
+        console.log(res)
         let roledbInfo = [];
 
         for ( i=0; i<res.length; i++){
@@ -143,7 +149,8 @@ function viewRoles(){
                 id: res[i].id,
                 title: res[i].title,
                 salary: res[i].salary,
-                department_id: res[i].department_id
+                department: res[i].departments,
+                department_id: res[i].id
 
             })
             
