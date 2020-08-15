@@ -50,6 +50,7 @@ function mainMenu(){
             "View Departments",
             "View All Employees by Manager",
             "Add Employee",
+            "Add Role",
             "Add Department",
             "Update Employee",
             "Update Employee Role",
@@ -82,6 +83,11 @@ function mainMenu(){
             case "Add Employee":
                 //console.log("This works!")    
                 addEmployee();
+                break;
+            
+            case "Add Role":
+                //console.log("This works!")
+                addRole();
                 break;
             
             case "Add Department":
@@ -173,7 +179,14 @@ function viewDept(){
 }
 
 function addEmployee(){
+    const roles = [];
+    connection.query("SELECT title FROM roledb", function (err, res){
+    if (err) throw err;
     
+    for (i=0; i<res.length; i++){
+        roles.push(res[i].title)
+    }
+});
     inquirer
         .prompt ([
     {
@@ -245,4 +258,58 @@ function addDepartment() {
                 }
             )
         })
+}
+
+function addRole(){
+    let departments = [];
+    connection.query("SELECT * FROM departments", (err, departments_data) => {
+        for (var i=0; i<departments_data.length; i++) {
+            departments.push(departments_data[i].dept_name)
+        }
+        inquirer
+            .prompt([
+                {
+                    type: "input",
+                    name: "title",
+                    message: "Enter the title of the new Role.",
+                },
+                {
+                    type: "input",
+                    name:"salary",
+                    message: "Enter the salary for this role."
+                },
+                {
+                    type:"list",
+                    name: "department",
+                    message:"What is this Role's department id?",
+                    choices: departments
+
+                }
+            ])
+            .then(async (response) => {
+                let deptId;
+                connection.query(
+                    "SELECT id FROM departments WHERE title = ?", response.department, function(err, depart){
+                        if (err) throw err;
+                        deptId = depart[0].id;
+                    }
+                )
+                
+                connection.query(
+                    "INSERT INTO roledb SET ?",
+                    {
+                        title: response.title,
+                        salary: response.salary,
+                        department_id: deptId,
+                    },
+                    function (error, res) {
+                        if (error){
+                            throw error;
+                        }
+                        console.log("Role added successfully")
+                        mainMenu();
+                    }
+                );
+            });
+    });
 }
