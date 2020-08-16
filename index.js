@@ -75,7 +75,7 @@ function mainMenu(){
                 break;
 
             case "View All Employees by Manager":
-                console.log("Coming Soon")    
+                console.log("Coming Soon \n")    
                 mainMenu();
                 break;
 
@@ -100,7 +100,7 @@ function mainMenu(){
                 break;
 
             case "Update Employee Manager":
-                console.log("Coming Soon")    
+                console.log("Coming Soon \n")    
             //updateManager();
                 break;
             
@@ -131,7 +131,7 @@ function viewRoles(){
 
     connection.query(searchRoles, function (err, res){
         if (err) throw err;
-        console.log(res)
+        
         let roledbInfo = [];
 
         for ( i=0; i<res.length; i++){
@@ -290,9 +290,8 @@ function yesManager() {
         manager_id: managerId,
       },
       function (error, res) {
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
+        
         console.log("Employee added successfully \n");
         mainMenu();
       }
@@ -436,60 +435,3 @@ function updateRole(){
     })
 }
 
-function originalAddEmployee(){
-    const roles = [];
-    connection.query("SELECT title FROM roledb", function (err, res){
-    if (err) throw err;
-    
-    for (i=0; i<res.length; i++){
-        roles.push(res[i].title)
-    }
-});
-    inquirer
-        .prompt ([
-    {
-        type: "input",
-        name: "firstname",
-        message: "Enter the employee's first name."
-    },
-    {
-        type:"input",
-        name: "lastname",
-        message: "Enter the employee's last name."
-    },
-    {
-        type: "input",
-        name:"manager",
-        message: "Enter the employee's manager.(Write null if none)"
-    },
-    {
-        type: "list",
-        name: "role",
-        message: "What is the employee's role?",
-        choices: roles
-    },
-    
-])
-    .then (response => {
-        //console.log(response)
-        let roleId;
-        connection.query("SELECT id FROM roledb WHERE title = ?", response.role, 
-        function (err, res){
-            if (err) throw err;
-            roleId = res[0].id;
-            connection.query(
-                "INSERT INTO employees SET ?",
-                {
-                   first_name: response.firstname,
-                   last_name: response.lastname, 
-                   role_id: roleId,
-                   manager: response.manager
-                },
-                function (err, res){
-                    if (err) throw err;
-                    console.log ("Employee added successfully!")
-                    mainMenu();
-                }
-            )     
-        })
-    })}
