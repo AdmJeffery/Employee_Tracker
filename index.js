@@ -117,18 +117,8 @@ function viewEmployees(){
     var searchAll = "SELECT first_name, last_name, title, salary, manager_id FROM employees LEFT JOIN roledb ON employees.role_id = roledb.id"
     connection.query(searchAll, function (err, res){
         if (err) throw err;
-        console.log(res)
         
-        //let employeeInfo = [];
-
-        //for (i=0; i<res.length; i++){
-        //    employeeInfo.push({
-        //        name: res[i].first_name + " " + res[i].last_name,
-        //        role: res[i].role_id,
-        //        manager: res[i].manager
-        //        title:
-        //    })
-        //}
+        
         console.table(res)
         mainMenu();
 
@@ -180,62 +170,134 @@ function viewDept(){
 }
 
 function addEmployee(){
-    const roles = [];
-    connection.query("SELECT title FROM roledb", function (err, res){
-    if (err) throw err;
+    inquirer.prompt({
+        type: "confirm",
+      name: "checking",
+      message: "Does this Employee have a manager?",
+    })
+    .then((response) => {
+        if (response.checking) {
+          
+          yesManager();
+        } else {
+          
+          noManager();
+        }
+      });
     
-    for (i=0; i<res.length; i++){
-        roles.push(res[i].title)
+    
     }
-});
-    inquirer
-        .prompt ([
-    {
-        type: "input",
-        name: "firstname",
-        message: "Enter the employee's first name."
-    },
-    {
-        type:"input",
-        name: "lastname",
-        message: "Enter the employee's last name."
-    },
-    {
-        type: "input",
-        name:"manager",
-        message: "Enter the employee's manager."
-    },
-    {
-        type: "list",
-        name: "role",
-        message: "What is the employee's role?",
-        choices: roles
-    },
+
+function noManager(){
+    let roles = {};
     
-])
-    .then (response => {
-        //console.log(response)
-        let roleId;
-        connection.query("SELECT id FROM roledb WHERE title = ?", response.role, 
-        function (err, res){
-            if (err) throw err;
-            roleId = res[0].id;
-            connection.query(
-                "INSERT INTO employees SET ?",
-                {
-                   first_name: response.firstname,
-                   last_name: response.lastname, 
-                   role_id: roleId,
-                   manager: response.manager
-                },
-                function (err, res){
-                    if (err) throw err;
-                    console.log ("Employee added successfully!")
-                    mainMenu();
-                }
-            )     
-        })
-    })}
+    connection.query("SELECT * FROM roledb", (err, roles_data) => {
+      for (var i = 0; i < roles_data.length; i++) {
+        let role = roles_data[i];
+        roles[role.title] = role.id;
+      }
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "first_name",
+            message: "What is the Employee's first name?",
+            
+          },
+          {
+            type: "input",
+            name: "last_name",
+            message: "What is the Employee's last name?",
+            
+          },
+          {
+            type: "list",
+            name: "role",
+            message: "What is the Employee's role?",
+            choices: Object.keys(roles),
+          },
+        ])
+        .then(async (response) => {
+          
+          buildEmployee(response, roles[response.role]);
+        });
+    });
+}
+
+function yesManager() {
+    
+    let roles = {};
+    let managers = {};
+    
+    connection.query("SELECT * FROM roledb", (err, roles_data) => {
+      for (var i = 0; i < roles_data.length; i++) {
+        let role = roles_data[i];
+        roles[role.title] = role.id;
+      }
+      
+      connection.query("SELECT * FROM employees", (err, employees_data) => {
+        for (var i = 0; i < employees_data.length; i++) {
+          let worker = employees_data[i];
+          managers[` ${worker.first_name} ${worker.last_name},`] = worker.id;
+        }
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "first_name",
+              message: "What is the Employee's first name?",
+              
+            },
+            {
+              type: "input",
+              name: "last_name",
+              message: "What is the Employee's last name?",
+              
+            },
+            {
+              type: "list",
+              name: "role",
+              message: "What is the Employee's role?",
+              choices: Object.keys(roles),
+            },
+            {
+              type: "list",
+              name: "manager_id",
+              message: "Who is the Employee's manager?",
+              choices: Object.keys(managers),
+            },
+          ])
+          .then(async (response) => {
+            //Take the responses, including the ids of both manager and employee, and send them to the buildEmployee function
+            buildEmployee(
+              response,
+              roles[response.role],
+              managers[response.manager_id]
+            );
+          });
+      });
+    });
+  }
+
+  function buildEmployee(response, roleId, managerId) {
+    console.log("Creating the profile for a new employee...\n");
+    connection.query(
+      "INSERT INTO employees SET ?",
+      {
+        first_name: response.first_name,
+        last_name: response.last_name,
+        role_id: roleId,
+        manager_id: managerId,
+      },
+      function (error, res) {
+        if (error) {
+          throw error;
+        }
+        console.log("Employee added successfully \n");
+        mainMenu();
+      }
+    );
+  }
 
 function addDepartment() {
     inquirer
@@ -373,3 +435,61 @@ function updateRole(){
             })
     })
 }
+
+function originalAddEmployee(){
+    const roles = [];
+    connection.query("SELECT title FROM roledb", function (err, res){
+    if (err) throw err;
+    
+    for (i=0; i<res.length; i++){
+        roles.push(res[i].title)
+    }
+});
+    inquirer
+        .prompt ([
+    {
+        type: "input",
+        name: "firstname",
+        message: "Enter the employee's first name."
+    },
+    {
+        type:"input",
+        name: "lastname",
+        message: "Enter the employee's last name."
+    },
+    {
+        type: "input",
+        name:"manager",
+        message: "Enter the employee's manager.(Write null if none)"
+    },
+    {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: roles
+    },
+    
+])
+    .then (response => {
+        //console.log(response)
+        let roleId;
+        connection.query("SELECT id FROM roledb WHERE title = ?", response.role, 
+        function (err, res){
+            if (err) throw err;
+            roleId = res[0].id;
+            connection.query(
+                "INSERT INTO employees SET ?",
+                {
+                   first_name: response.firstname,
+                   last_name: response.lastname, 
+                   role_id: roleId,
+                   manager: response.manager
+                },
+                function (err, res){
+                    if (err) throw err;
+                    console.log ("Employee added successfully!")
+                    mainMenu();
+                }
+            )     
+        })
+    })}
