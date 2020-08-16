@@ -19,6 +19,8 @@ Click the link below to watch the full video
 
 [Video Tutorial](https://drive.google.com/file/d/1aH2PDIrbo3ROCeDd7U3uvtCbSC-_k_S8/view)
 
+[Tutorial](Assets/Employee_Tracker_Tutorial.gif)
+
 ## Updates
 This project is still in the earliest stages and meets the minimum project requirements for my assignment. In the future, I would like to:
 * Add Delete functionality
