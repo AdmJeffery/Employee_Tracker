@@ -48,12 +48,10 @@ function mainMenu(){
             "View All Employees",
             "View Roles",
             "View Departments",
-            "View All Employees by Manager",
             "Add Employee",
             "Add Role",
             "Add Department",
             "Update Employee Role",
-            "Update Employee Manager",
             "EXIT"
         ]
     })
@@ -74,10 +72,7 @@ function mainMenu(){
                 viewDept();
                 break;
 
-            case "View All Employees by Manager":
-                console.log("Coming Soon \n")    
-                mainMenu();
-                break;
+            
 
             case "Add Employee":
                    
@@ -99,10 +94,6 @@ function mainMenu(){
                 updateRole();
                 break;
 
-            case "Update Employee Manager":
-                console.log("Coming Soon \n")    
-            //updateManager();
-                break;
             
             case "EXIT":
                 console.log("Goodbye!");
@@ -201,13 +192,13 @@ function noManager(){
           {
             type: "input",
             name: "first_name",
-            message: "What is the Employee's first name?",
+            message: "Enter the Employee's first name",
             
           },
           {
             type: "input",
             name: "last_name",
-            message: "What is the Employee's last name?",
+            message: "Enter the Employee's last name",
             
           },
           {
@@ -245,13 +236,13 @@ function yesManager() {
             {
               type: "input",
               name: "first_name",
-              message: "What is the Employee's first name?",
+              message: "Enter the Employee's first name",
               
             },
             {
               type: "input",
               name: "last_name",
-              message: "What is the Employee's last name?",
+              message: "Enter the Employee's last name",
               
             },
             {
@@ -268,7 +259,7 @@ function yesManager() {
             },
           ])
           .then(async (response) => {
-            //Take the responses, including the ids of both manager and employee, and send them to the buildEmployee function
+            
             buildEmployee(
               response,
               roles[response.role],
@@ -353,8 +344,7 @@ function addRole(){
                 connection.query(
                     "SELECT id FROM departments WHERE dept_name = ?", response.department, function(err, depart){
                         if (err) throw err;
-                        console.log(depart)
-                        console.log(`RESPONSE: ${depart}`)
+                        
                         deptId = depart[0].id;
 
                         connection.query(
