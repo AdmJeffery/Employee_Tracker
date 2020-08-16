@@ -120,23 +120,11 @@ function viewRoles(){
     let searchRoles = "SELECT roledb.id, title, salary, departments.id, departments.dept_name AS departments FROM roledb";
     searchRoles += " LEFT JOIN departments ON roledb.department_id = departments.id ";
 
-    connection.query(searchRoles, function (err, res){
+    connection.query(searchRoles, function (err, data){
         if (err) throw err;
         
-        let roledbInfo = [];
-
-        for ( i=0; i<res.length; i++){
-            roledbInfo.push({
-                id: res[i].id,
-                title: res[i].title,
-                salary: res[i].salary,
-                department: res[i].departments,
-                department_id: res[i].id
-
-            })
-            
-        }
-        console.table(roledbInfo);
+        console.log(` ${data.length} roles currently listed`)
+        console.table(data);
             mainMenu();
     })
 }
